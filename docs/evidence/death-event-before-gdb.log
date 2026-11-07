@@ -1,0 +1,13 @@
+0x0000000040000000 in ?? ()
+Breakpoint 1 at 0x400826e0: file kernel/task.c, line 400.
+
+Breakpoint 1, task_exception (frame=0x4008cee0 <stacks+7904>, kind=0) at kernel/task.c:400
+400	    struct task *t = &task[current];
+RESTART entry: pending=0 instance=1 rtc_state=7
+injection: pending=1 instance=1 rtc_state=7
+Breakpoint 2 at 0x400826e0: file kernel/task.c, line 400.
+
+Breakpoint 2, task_exception (frame=0x4008cee0 <stacks+7904>, kind=0) at kernel/task.c:400
+400	    struct task *t = &task[current];
+WAIT_DEATH entry: pending=1 instance=2 epoch=2 rtc_state=0
+[Inferior 1 (process 1) exited with code 01]

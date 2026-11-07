@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "contract": "docs/project-contract.md",
+  "phases": [
+    {"id": "P0", "title": "Boot probe 與建置契約", "depends_on": [], "gates": ["p0-image", "p0-boot"], "topics": ["boot"], "freeze": ["Image/linker/入口與受控 FDT schema", "test exit 與 guest assertions"]},
+    {"id": "P1", "title": "MMU、vectors 與保留記憶體", "depends_on": ["P0"], "gates": ["p1-pte", "p1-vm"], "topics": ["mmu"], "freeze": ["VA/PA layout、頁權限與 cache/TLB 順序", "trap frame 與 ASM offsets"]},
+    {"id": "P2", "title": "固定 EL0 tasks 與 SVC", "depends_on": ["P1"], "gates": ["p2-isolation"], "topics": ["mmu"], "freeze": ["固定映像段、task 資源與 BootInfo", "SVC ABI 與 fault 分類"]},
+    {"id": "P3", "title": "GIC timer 與搶占排程", "depends_on": ["P2"], "gates": ["p3-state", "p3-sched"], "topics": ["sched", "irq"], "freeze": ["優先權、READY 集合、wait/deadline 與 kernel exit", "最小 GIC/PPI 初始化與 timer 時間域"]},
+    {"id": "P4", "title": "同步 IPC 與唯一完成", "depends_on": ["P3"], "gates": ["p4-ipc-model", "p4-ipc"], "topics": ["ipc"], "freeze": ["四 word RPC、靜態 rights、token/epoch", "absolute deadline 邊界、E_BUSY/E_STALE 與取消語意"]},
+    {"id": "P5", "title": "單 thread RTC 與 IRQ 通知", "depends_on": ["P4"], "gates": ["p5-rtc"], "topics": ["irq", "ipc"], "freeze": ["GET_TIME/PING/WAIT_ALARM request/reply", "啟動握手、pending/clear/ACK 與服務有限等待"]},
+    {"id": "P6", "title": "RTC 故障隔離與重啟", "depends_on": ["P5"], "gates": ["p6-restart"], "topics": ["recovery", "irq", "ipc"], "freeze": ["cleanup 完成點與 scheduler-safe stack 重用", "instance/epoch、舊事件清除、有限重啟政策"]},
+    {"id": "P7", "title": "回歸、除錯證據與系統展示", "depends_on": ["P6"], "gates": ["p7-regression", "p7-demo"], "topics": ["recovery", "interview"], "freeze": ["展示腳本、量測定義與重現條件"]}
+  ],
+  "topics": {
+    "boot": ["docs/phases.md", "tools/inspect_image.py", "config/qemu.json"],
+    "mmu": ["docs/debugging.md", "docs/project-contract.md"],
+    "sched": ["docs/debugging.md", "docs/project-contract.md"],
+    "ipc": ["docs/debugging.md", "docs/project-contract.md"],
+    "irq": ["docs/debugging.md", "config/qemu.json"],
+    "recovery": ["docs/debugging.md", "docs/interview.md"],
+    "interview": ["docs/interview.md"]
+  }
+}

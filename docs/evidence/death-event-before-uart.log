@@ -1,0 +1,13 @@
+[TEST] CASE=p6-restart START
+[BOOT] el=1 fdt=0x48000000 size=1048576
+[PLATFORM] ram_base=0x40000000 ram_size=0x20000000 uart=0x9000000 rtc=0x9010000 gicd=0x8000000 gicr=0x80a0000 rtc_irq=34 timer_irq=30
+[VM] enabled=1 granule=4096 root=0x40094000 high_pc=0xffffff80400851cc text_ro=1 data_xn=1 reserved=1
+[EXCEPTION] el=1 ec=60 recovered=1
+[TASK] role=0 el=0 instance=1
+[TASK] role=1 el=0 instance=1
+[TASK] role=2 el=0 instance=1
+[FAULT] role=1 instance=1 esr=0x92000006 far=0x1000 elr=0x4002ec
+[DEATH] role=1 instance=1 epoch=2 esr=0x92000006 far=0x1000 masked=1 device_pending=0
+[REBUILD] instance=2 epoch=2 tables=28
+[USER_FAIL] role=0 code=24
+[PANIC] user assertion

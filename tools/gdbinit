@@ -1,0 +1,10 @@
+# 從專案根目錄執行：gdb-multiarch -q -x tools/gdbinit
+# 先在另一個 terminal 執行 tools/debug_qemu.py。
+set pagination off
+set confirm off
+set architecture aarch64
+file build/kernel.elf
+target remote 127.0.0.1:1234
+
+# 先停在 panic；需要看 trap 時再設 break *task_exception。
+break panic

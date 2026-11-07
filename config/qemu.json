@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "executable": "qemu-system-aarch64",
+  "machine": "virt",
+  "machine_properties": {
+    "gic-version": 3,
+    "virtualization": "off",
+    "highmem": "off"
+  },
+  "cpu": "cortex-a53",
+  "memory_mib": 512,
+  "smp": 1,
+  "rtc_clock": "vm"
+}

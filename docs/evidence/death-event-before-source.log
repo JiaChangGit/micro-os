@@ -1,0 +1,38 @@
+aarch64-linux-gnu-gcc -std=c11 -O2 -g -ffreestanding -fno-builtin -fno-pie -fno-stack-protector -mgeneral-regs-only -mstrict-align -Wall -Wextra -Werror -Iinclude -Ibuild -MMD -MP -c kernel/main.c -o build/kernel/main.o
+aarch64-linux-gnu-gcc -std=c11 -O2 -g -ffreestanding -fno-builtin -fno-pie -fno-stack-protector -mgeneral-regs-only -mstrict-align -Wall -Wextra -Werror -Iinclude -Ibuild -MMD -MP -c kernel/console.c -o build/kernel/console.o
+aarch64-linux-gnu-gcc -std=c11 -O2 -g -ffreestanding -fno-builtin -fno-pie -fno-stack-protector -mgeneral-regs-only -mstrict-align -Wall -Wextra -Werror -Iinclude -Ibuild -MMD -MP -c kernel/string.c -o build/kernel/string.o
+aarch64-linux-gnu-gcc -std=c11 -O2 -g -ffreestanding -fno-builtin -fno-pie -fno-stack-protector -mgeneral-regs-only -mstrict-align -Wall -Wextra -Werror -Iinclude -Ibuild -MMD -MP -c kernel/fdt.c -o build/kernel/fdt.o
+aarch64-linux-gnu-gcc -std=c11 -O2 -g -ffreestanding -fno-builtin -fno-pie -fno-stack-protector -mgeneral-regs-only -mstrict-align -Wall -Wextra -Werror -Iinclude -Ibuild -MMD -MP -c kernel/exception.c -o build/kernel/exception.o
+aarch64-linux-gnu-gcc -std=c11 -O2 -g -ffreestanding -fno-builtin -fno-pie -fno-stack-protector -mgeneral-regs-only -mstrict-align -Wall -Wextra -Werror -Iinclude -Ibuild -MMD -MP -c user/root.c -o build/user/root.o
+aarch64-linux-gnu-gcc -std=c11 -O2 -g -ffreestanding -fno-builtin -fno-pie -fno-stack-protector -mgeneral-regs-only -mstrict-align -Wall -Wextra -Werror -Iinclude -Ibuild -MMD -MP -c user/start.S -o build/user/start.o
+aarch64-linux-gnu-ld -z max-page-size=4096 -T user/linker.ld -o build/user/root.elf build/user/start.o build/user/root.o
+aarch64-linux-gnu-gcc -std=c11 -O2 -g -ffreestanding -fno-builtin -fno-pie -fno-stack-protector -mgeneral-regs-only -mstrict-align -Wall -Wextra -Werror -Iinclude -Ibuild -MMD -MP -c user/rtc.c -o build/user/rtc.o
+aarch64-linux-gnu-ld -z max-page-size=4096 -T user/linker.ld -o build/user/rtc.elf build/user/start.o build/user/rtc.o
+aarch64-linux-gnu-gcc -std=c11 -O2 -g -ffreestanding -fno-builtin -fno-pie -fno-stack-protector -mgeneral-regs-only -mstrict-align -Wall -Wextra -Werror -Iinclude -Ibuild -MMD -MP -c user/client.c -o build/user/client.o
+aarch64-linux-gnu-ld -z max-page-size=4096 -T user/linker.ld -o build/user/client.elf build/user/start.o build/user/client.o
+python3 tools/pack_users.py build/user/root.elf build/user/rtc.elf build/user/client.elf --output build/user_images.h
+aarch64-linux-gnu-gcc -std=c11 -O2 -g -ffreestanding -fno-builtin -fno-pie -fno-stack-protector -mgeneral-regs-only -mstrict-align -Wall -Wextra -Werror -Iinclude -Ibuild -MMD -MP -c kernel/task.c -o build/kernel/task.o
+aarch64-linux-gnu-gcc -std=c11 -O2 -g -ffreestanding -fno-builtin -fno-pie -fno-stack-protector -mgeneral-regs-only -mstrict-align -Wall -Wextra -Werror -Iinclude -Ibuild -MMD -MP -c kernel/state.c -o build/kernel/state.o
+aarch64-linux-gnu-gcc -std=c11 -O2 -g -ffreestanding -fno-builtin -fno-pie -fno-stack-protector -mgeneral-regs-only -mstrict-align -Wall -Wextra -Werror -Iinclude -Ibuild -MMD -MP -c arch/aarch64/vm.c -o build/arch/aarch64/vm.o
+aarch64-linux-gnu-gcc -std=c11 -O2 -g -ffreestanding -fno-builtin -fno-pie -fno-stack-protector -mgeneral-regs-only -mstrict-align -Wall -Wextra -Werror -Iinclude -Ibuild -MMD -MP -c arch/aarch64/irq.c -o build/arch/aarch64/irq.o
+aarch64-linux-gnu-gcc -std=c11 -O2 -g -ffreestanding -fno-builtin -fno-pie -fno-stack-protector -mgeneral-regs-only -mstrict-align -Wall -Wextra -Werror -Iinclude -Ibuild -MMD -MP -c arch/aarch64/boot.S -o build/arch/aarch64/boot.o
+aarch64-linux-gnu-gcc -std=c11 -O2 -g -ffreestanding -fno-builtin -fno-pie -fno-stack-protector -mgeneral-regs-only -mstrict-align -Wall -Wextra -Werror -Iinclude -Ibuild -MMD -MP -c arch/aarch64/vectors.S -o build/arch/aarch64/vectors.o
+aarch64-linux-gnu-ld -z max-page-size=4096 -T linker/kernel.ld -Map=build/kernel.map -o build/kernel.elf build/kernel/main.o build/kernel/console.o build/kernel/string.o build/kernel/fdt.o build/kernel/exception.o build/kernel/task.o build/kernel/state.o build/arch/aarch64/vm.o build/arch/aarch64/irq.o build/arch/aarch64/boot.o build/arch/aarch64/vectors.o
+aarch64-linux-gnu-objcopy -O binary build/kernel.elf build/kernel.img
+qemu-system-aarch64 -machine virt,gic-version=3,virtualization=off,highmem=off,dumpdtb=build/platform.dtb -cpu cortex-a53 -accel tcg -smp 1 -m 512M -display none -nic none
+python3 tools/run_qemu.py --case "p6-restart" --image "build/kernel.img" --timeout "45" --boot-args "case=p6-restart" --show-output
+[TEST] CASE=p6-restart START
+[BOOT] el=1 fdt=0x48000000 size=1048576
+[PLATFORM] ram_base=0x40000000 ram_size=0x20000000 uart=0x9000000 rtc=0x9010000 gicd=0x8000000 gicr=0x80a0000 rtc_irq=34 timer_irq=30
+[VM] enabled=1 granule=4096 root=0x40094000 high_pc=0xffffff80400851cc text_ro=1 data_xn=1 reserved=1
+[EXCEPTION] el=1 ec=60 recovered=1
+[TASK] role=0 el=0 instance=1
+[TASK] role=1 el=0 instance=1
+[TASK] role=2 el=0 instance=1
+[FAULT] role=1 instance=1 esr=0x92000006 far=0x1000 elr=0x4002ec
+[DEATH] role=1 instance=1 epoch=2 esr=0x92000006 far=0x1000 masked=1 device_pending=0
+[REBUILD] instance=2 epoch=2 tables=28
+[USER_FAIL] role=0 code=19
+[PANIC] user assertion
+{"status": "FAIL", "report": "<project-root>/build/pending-source-copy/build/reports/qemu/p6-restart/20261105T044814204130Z-37d73d45/report.json"}
+make: *** [Makefile:106: qemu] Error 1

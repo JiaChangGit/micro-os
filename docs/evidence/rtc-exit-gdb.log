@@ -1,0 +1,7 @@
+0x0000000040000000 in ?? ()
+Breakpoint 1 at 0x40082580: file kernel/task.c, line 392.
+
+Breakpoint 1, task_exception (frame=0x4008eee0 <stacks+16096>, kind=0) at kernel/task.c:392
+392	    struct task *t = &task[current];
+RTC syscall before injection: 5
+[Inferior 1 (process 1) exited with code 01]
