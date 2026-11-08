@@ -1,6 +1,6 @@
 # 從開機到第一個 EL0 task
 
-本章追蹤一條具體路徑：QEMU 將 Image 與 Device Tree 載入記憶體，核心建立頁表與 exception vector，再準備 task 的暫存器並以 `eret` 進入 EL0。讀完後，應能回答：FDT 位址在哪裡保存？MMU 開啟前後如何繼續取指？同一個 user VA 如何隔離不同 task？例外發生後誰決定下一個執行位置？
+本章追蹤一條具體路徑：QEMU 將 Image 與 Device Tree 載入記憶體，核心建立頁表與 exception vector，再準備 task 的暫存器並以 `eret` 進入 EL0。FDT（Flattened Device Tree）是平台描述的扁平化表示；MMU（Memory Management Unit）負責位址轉譯和權限檢查。讀完後，應能回答：FDT 位址在哪裡保存？MMU 開啟前後如何繼續取指？同一個 user VA 如何隔離不同 task？例外發生後誰決定下一個執行位置？其他縮寫見[術語與縮寫](terms.md)。
 
 這裡的程式是獨立核心；Image header 參照 [AArch64 Linux boot protocol](https://docs.kernel.org/arch/arm64/booting.html) 的格式，並不表示載入的是 Linux kernel。平台使用 [QEMU virt](https://www.qemu.org/docs/master/system/arm/virt.html)，不是特定實體板子的模擬。
 

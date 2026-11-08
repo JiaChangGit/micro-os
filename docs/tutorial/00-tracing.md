@@ -1,10 +1,10 @@
 # 00：執行程式並追蹤一次例外
 
-本章沿一個可以實際重現的例子，找出「哪個 task 存取了什麼位址，CPU 為什麼進入核心，以及核心如何保留現場」。先準備兩個 WSL 終端，兩邊都切換到專案根目錄，並執行過 `make all`。
+本章沿一個可以實際重現的例子，找出「哪個 task 存取了什麼位址，CPU 為什麼進入核心，以及核心如何保留現場」。task 是可被核心排程的執行單元；本專案的 root、RTC、client 各有一條 thread。先準備兩個 WSL 終端，兩邊都切換到專案根目錄，並執行過 `make all`。常用縮寫可查[術語與縮寫](terms.md)。
 
 ## 先辨認三種不同的東西
 
-一個**函式呼叫**會依呼叫慣例傳參數並保存返回位置。**SVC** 是 EL0 主動要求核心處理服務的指令；**fault** 則是指令執行時發生例外，例如缺少存取權限。SVC 與 fault 都會進 exception vector，但原因及後續處理不同。IRQ 是由裝置或 timer 送達的非同步事件，也走 exception vector。
+一個**函式呼叫**會依呼叫慣例傳參數並保存返回位置。**SVC**（Supervisor Call）是 EL0 執行的例外指令，用來進入核心處理服務；**fault** 則是目前指令執行時發生的例外，例如缺少存取權限。SVC 與 fault 都會進 exception vector（例外入口），但原因及後續處理不同。IRQ（Interrupt Request，中斷請求）由裝置或 timer 等來源送達，也走 exception vector。
 
 下面的例子選 `p2-mmio`：client 的位址空間沒有 RTC 的 user mapping。client 嘗試讀取 `0x20000000`，處理器產生 data abort。該次測試中，核心記錄 fault，將 client 設為 DEAD，root 隨後繼續執行。這是刻意安排的隔離測試。
 

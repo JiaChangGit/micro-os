@@ -2,6 +2,8 @@
 
 本教材以這個目錄中的 AArch64 核心為對象。系統在 QEMU `virt`、單一 Cortex-A53 CPU 上執行：核心位於 EL1，root、RTC 與 client 各有一個 EL0 task。先依建置章準備環境，再從一次例外開始追蹤；各章編號是檔案識別，建議順序如下。
 
+遇到不熟悉的名稱時，可查閱[術語與縮寫](terms.md)；各章會在需要時連回對應概念。
+
 ```mermaid
 flowchart LR
     Z[05 建置與工具] --> A[00 執行與追蹤]

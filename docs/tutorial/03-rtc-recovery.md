@@ -1,6 +1,6 @@
 # RTC 中斷、等待與重啟
 
-本章沿著一筆 `WAIT_ALARM`，追蹤資料如何從 client 進入 RTC、裝置如何通知核心，以及 RTC 在中途中止後如何恢復。建議先讀 `user/client.c`、`user/rtc.c`，再看 `kernel/task.c` 的 `syscall()`、`task_exception()`、`rtc_fault()` 和 `load_role()`。硬體中斷的暫存器操作在 `arch/aarch64/irq.c`。
+本章沿著一筆 `WAIT_ALARM`，追蹤資料如何從 client 進入 RTC、裝置如何通知核心，以及 RTC 在中途中止後如何恢復。RTC（Real-Time Clock）是時間裝置；GIC（Generic Interrupt Controller）負責中斷分派。建議先讀 `user/client.c`、`user/rtc.c`，再看 `kernel/task.c` 的 `syscall()`、`task_exception()`、`rtc_fault()` 和 `load_role()`。硬體中斷的暫存器操作在 `arch/aarch64/irq.c`；其他縮寫見[術語與縮寫](terms.md)。
 
 先建立一個觀念：**裝置狀態、GIC 狀態、核心 notification 與 thread 狀態是四種不同的狀態**。它們彼此影響，但清除其中一個不等於另外三個也已清除。
 
